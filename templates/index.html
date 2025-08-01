@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Depression Diagnosis Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 6px;
+            margin-top: 5px;
+        }
+        .submit-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .result {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Depression Diagnosis Tool</h1>
+
+    <form method="POST">
+        {% for feature in features %}
+            <label for="{{ feature }}">{{ feature.replace('_', ' ') }}</label>
+            <select name="{{ feature }}" required>
+                {% set selected = inputs.get(feature, '') %}
+                {% for val, label in {
+                    '2': 'Always',
+                    '3': 'Often',
+                    '5': 'Sometimes',
+                    '4': 'Rarely',
+                    '6': 'Not at all',
+                    '1': 'Never'
+                }.items() %}
+                    <option value="{{ val }}" {% if selected == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        {% endfor %}
+
+        <button class="submit-btn" type="submit">Diagnose</button>
+    </form>
+
+    {% if prediction %}
+        <div class="result">
+            Predicted Mental State: <span style="color: {{ 'red' if prediction == 'Depressed' else 'green' }};">{{ prediction }}</span>
+        </div>
+    {% endif %}
+</body>
+</html>
